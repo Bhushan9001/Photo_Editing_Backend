@@ -18,12 +18,12 @@ function generateOTP() {
 
 
 const authController = { // user Authentication Controller 
-  signup: async (req, res) => {  
+  signup: async (req, res) => {
     // console.log(req.body);
     try {
-      const { email, password , username } = req.body;
-      if(password.lenght < 6){
-        res.status(401).json({"message":"Password should be greater than 6 characters"});
+      const { email, password, username } = req.body;
+      if (password.lenght < 6) {
+        res.status(401).json({ "message": "Password should be greater than 6 characters" });
       }
       const hashed_password = bcrypt.hashSync(password, 10);
       const otp = generateOTP();
@@ -31,7 +31,7 @@ const authController = { // user Authentication Controller
       const user = await prisma.client.create({
         data: {
           email: email,
-          username:username,
+          username: username,
           password: hashed_password,
           otp: {
             create: {
@@ -46,13 +46,13 @@ const authController = { // user Authentication Controller
         subject: 'Email Verification OTP',
         text: `Your OTP for email verification is: ${otp}. It will expire in 10 minutes.`
       });
-      res.status(200).json({ "message":"Check your mail" });
+      res.status(200).json({ "message": "Check your mail" });
     } catch (error) {
       res.status(500).json({ "error": error })
       console.log(error);
     }
   },
- 
+
   verifyEmail: async (req, res) => {
     try {
       const { email, otp } = req.body;
@@ -97,7 +97,7 @@ const authController = { // user Authentication Controller
           email
         }
       })
-    //   console.log(user);
+      //   console.log(user);
       if (!user) return res.status(401).json({ "error": "No user with this email" })
       if (!bcrypt.compareSync(password, user.password)) return res.status(401).json({ "error": "Incorrect Password" });
 
@@ -114,7 +114,55 @@ const authController = { // user Authentication Controller
       res.status(500).json({ "error": error });
       console.log(error);
     }
+  },
+  resetPassword: async (req, res) => {
+    try {
+      const { email } = req.body
+      const user = prisma.client.findUnique({
+        where: {
+          email: email
+        }
+      })
+      if (!user) return res.status(400).json({ "message": "No user with this email" });
+      const resetToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '10m' });
+
+      const resetUrl = `http://your-frontend-domain/reset-password?token=${resetToken}`;
+      await transporter.sendMail({
+        to: email,
+        subject: 'Password Reset Request',
+        text: `You requested a password reset. Please use the following link: ${resetUrl}. This link will expire in 10 minutes.`
+      });
+
+      res.status(200).json({ "message": "Password reset email sent" });
+    } catch (error) {
+      res.status(500).json({ "error": error });
+      console.log(error);
+    }
+  },
+  resetPasswordconfirm: async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      const decode = jwt.verify(token, process.env.JWT_SECRET);
+      const user = prisma.client.findUnique({
+        where: {
+          email: decode.email
+        }
+      })
+      if (!user) return res.status(400).json({ "message": "Invalid token" });
+      const hashedPassword = bcrypt.hashSync(newPassword, 10);
+
+      await prisma.client.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword
+        }
+      });
+
+      res.status(200).json({ "message": "Password reset successfully" });
+    } catch (error) {
+
+    }
   }
 }
 
-module.exports = {authController}
+module.exports = { authController }

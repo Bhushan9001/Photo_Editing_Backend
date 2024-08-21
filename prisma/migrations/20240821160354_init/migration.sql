@@ -1,26 +1,8 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `userId` on the `OTP` table. All the data in the column will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-  - Added the required column `clientId` to the `OTP` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'SUSPENDED');
 
 -- CreateEnum
 CREATE TYPE "AdminRole" AS ENUM ('SUPER_ADMIN', 'MANAGER', 'EDITOR');
-
--- DropForeignKey
-ALTER TABLE "OTP" DROP CONSTRAINT "OTP_userId_fkey";
-
--- AlterTable
-ALTER TABLE "OTP" DROP COLUMN "userId",
-ADD COLUMN     "clientId" INTEGER NOT NULL;
-
--- DropTable
-DROP TABLE "User";
 
 -- CreateTable
 CREATE TABLE "Client" (
@@ -46,6 +28,17 @@ CREATE TABLE "Admin" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OTP" (
+    "id" SERIAL NOT NULL,
+    "otp" TEXT NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "clientId" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "OTP_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

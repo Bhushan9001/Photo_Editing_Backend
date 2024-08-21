@@ -54,3 +54,4 @@ model OTP {
   clientId  Int
   createdAt DateTime @default(now())
 }
+
