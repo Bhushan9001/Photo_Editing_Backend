@@ -4,13 +4,13 @@ const passport = require('passport');
 const userRoutes = require('./src/routes/client/userRoutes')
 const adminRoutes = require('./src/routes/admin/adminRoutes')
 
-require('./src/passport');
 
 const app = express();
 
 
 app.use(express.json());
 app.use(passport.initialize());
+require('./src/passport');
 
 app.use("/api/users",userRoutes);
 app.use("/api/admin",adminRoutes);

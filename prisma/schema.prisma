@@ -25,6 +25,17 @@ enum AdminRole {
   EDITOR
 }
 
+enum Currency {
+  INR
+  USD
+  EUR
+  GBP
+  CAD 
+  AUD
+  THB
+  CNY
+}
+
 model Client {
   id         Int        @id @default(autoincrement())
   username   String     @unique
@@ -55,3 +66,37 @@ model OTP {
   createdAt DateTime @default(now())
 }
 
+
+
+model Service {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  subServices SubService[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model SubService {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String?
+  prices      PriceByCountry[]
+  service     Service           @relation(fields: [serviceId], references: [id])
+  serviceId   Int
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([name, serviceId])
+  
+}
+
+model PriceByCountry {
+  id           Int        @id @default(autoincrement())
+  subService   SubService @relation(fields: [subServiceId], references: [id])
+  subServiceId Int
+  currency     Currency   @default(INR)
+  price        Decimal    @db.Decimal(10, 2)
+
+  @@unique([subServiceId, currency])
+}

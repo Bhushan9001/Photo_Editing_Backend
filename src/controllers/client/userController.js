@@ -104,7 +104,8 @@ const authController = { // user Authentication Controller
 
       const payload = {
         email: email,
-        id: user.id
+        id: user.id,
+        role:"client"
       }
 
       const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -118,7 +119,7 @@ const authController = { // user Authentication Controller
   resetPassword: async (req, res) => {
     try {
       const { email } = req.body
-      const user = prisma.client.findUnique({
+      const user = await prisma.client.findUnique({
         where: {
           email: email
         }
@@ -133,7 +134,7 @@ const authController = { // user Authentication Controller
         text: `You requested a password reset. Please use the following link: ${resetUrl}. This link will expire in 10 minutes.`
       });
 
-      res.status(200).json({ "message": "Password reset email sent" });
+      res.status(200).json({ "message": "Password reset email sent",resetToken });
     } catch (error) {
       res.status(500).json({ "error": error });
       console.log(error);
@@ -143,11 +144,12 @@ const authController = { // user Authentication Controller
     try {
       const { token, newPassword } = req.body;
       const decode = jwt.verify(token, process.env.JWT_SECRET);
-      const user = prisma.client.findUnique({
+      const user = await prisma.client.findUnique({
         where: {
           email: decode.email
         }
       })
+      console.log(user)
       if (!user) return res.status(400).json({ "message": "Invalid token" });
       const hashedPassword = bcrypt.hashSync(newPassword, 10);
 
