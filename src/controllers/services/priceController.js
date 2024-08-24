@@ -24,25 +24,24 @@ const priceController = {
             if (!Array.isArray(prices) || prices.length === 0) {
                 return res.status(400).json({ message: "Invalid input. Expected an array of prices." });
             }
-
+    
             const createdPrices = await prisma.$transaction(
                 prices.map(price => 
                     prisma.priceByCountry.create({
                         data: {
-                            price:parseFloat(amount),
+                            price: parseFloat(price.amount), // Changed from 'amount' to 'price.amount'
                             currency: price.currency,
                             subService: { connect: { id: Number(price.subServiceId) } }
                         }
                     })
                 )
             );
-
+    
             res.status(201).json({ message: "Prices created successfully", prices: createdPrices });
         } catch (error) {
             handlePrismaError(error, res);
         }
     },
-
     getAllPrices: async (req, res) => {
         try {
             const prices = await prisma.priceByCountry.findMany({
