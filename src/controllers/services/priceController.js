@@ -81,7 +81,7 @@ const priceController = {
                 where: { id: Number(id) },
                 data: {
                     price: amount ? parseFloat(amount) : undefined,
-                    currency,
+                    currency, 
                     subService: subServiceId ? { connect: { id: Number(subServiceId) } } : undefined
                 }
             });

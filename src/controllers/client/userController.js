@@ -91,7 +91,7 @@ const authController = { // user Authentication Controller
   signin: async (req, res) => {
     try {
       const { email, password } = req.body
-      // console.log(req.body);
+      console.log(req.body);
       const user = await prisma.client.findUnique({
         where: {
           email
