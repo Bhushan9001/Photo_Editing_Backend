@@ -31,6 +31,22 @@ const serviceController = {
         }
 
     },
+    getAllFullServices: async (req, res) => {
+        try {
+            const services = await prisma.service.findMany({
+                include: { subServices: {
+                    include:{
+                        prices:true
+                    }
+                } }
+            });
+            if (!services) return res.status(401).json({ "message": "No services found" })
+            res.status(201).json({ services });
+        } catch (error) {
+            handlePrismaError(error,res);
+        }
+
+    },
     getService: async (req,res) => {
         try {
             const { id } = req.params;

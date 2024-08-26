@@ -17,6 +17,30 @@ const subServicesController = {
             handlePrismaError(error, res);
         }
     },
+    createManySubServices: async (req, res) => {
+        try {
+            const { subServices } = req.body;
+            if (!Array.isArray(subServices) || subServices.length === 0) {
+                return res.status(400).json({ message: "Invalid input: subServices must be a non-empty array" });
+            }
+
+            const createdSubServices = await prisma.subService.createMany({
+                data: subServices.map(subService => ({
+                    name: subService.name,
+                    description: subService.description,
+                    serviceId: Number(subService.serviceId)
+                })),
+                skipDuplicates: true
+            });
+
+            res.status(201).json({ 
+                message: "SubServices created successfully", 
+                count: createdSubServices.count 
+            });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
 
     getAllSubServices: async (req, res) => {
         try {

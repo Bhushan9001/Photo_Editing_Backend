@@ -3,7 +3,7 @@ const { serviceController } = require('../../controllers/services/serviceControl
 const router = require('express').Router();
 
 router.post("/",serviceController.creatService);
-router.get("/",serviceController.getAllServices);
+router.get("/",serviceController.getAllFullServices);
 router.get("/:id",serviceController.getService);
 router.put("/:id",serviceController.updateService);
 router.delete("/:id",serviceController.deleteService);

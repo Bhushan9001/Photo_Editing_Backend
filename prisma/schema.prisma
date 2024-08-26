@@ -30,7 +30,7 @@ enum Currency {
   USD
   EUR
   GBP
-  CAD 
+  CAD
   AUD
   THB
   CNY
@@ -45,6 +45,7 @@ model Client {
   status     UserStatus @default(ACTIVE)
   createdAt  DateTime   @default(now())
   otp        OTP[]
+  job        Job[]
 }
 
 model Admin {
@@ -76,17 +77,17 @@ model Service {
 }
 
 model SubService {
-  id          Int               @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   name        String
   description String?
   prices      PriceByCountry[]
-  service     Service           @relation(fields: [serviceId], references: [id])
+  service     Service          @relation(fields: [serviceId], references: [id])
   serviceId   Int
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  job         Job[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   @@unique([name, serviceId])
-  
 }
 
 model PriceByCountry {
@@ -97,4 +98,26 @@ model PriceByCountry {
   price        Decimal    @db.Decimal(10, 2)
 
   @@unique([subServiceId, currency])
+}
+
+model Job {
+  id           Int        @id @default(autoincrement())
+  user         Client     @relation(fields: [clientId], references: [id])
+  clientId     Int
+  subService   SubService @relation(fields: [subServiceId], references: [id])
+  subServiceId Int
+  totalPrice   Decimal    @db.Decimal(10, 2)
+  currency     Currency
+  status       JobStatus  @default(PENDING)
+  dropboxLink  String
+  Instructions String?    @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
 }
