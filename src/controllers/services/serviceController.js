@@ -6,10 +6,23 @@ const serviceController = {
     creatService: async (req, res) => {
         try {
             const { name, description } = req.body;
+            const adminRole = req.user.role;
+            if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create services"})
+            if (!req.files['beforeImage'] || !req.files['afterImage']) {
+                return res.status(400).json({ error: 'Both before and after images are required' });
+              }
+          
+              const beforeImagePath = `images/${req.files['beforeImage'][0].filename}`;
+              const afterImagePath = `images/${req.files['afterImage'][0].filename}`;
+
+           
+              
             const service = await prisma.service.create({
                 data: {
                     name: name,
-                    description: description
+                    description: description,
+                    beforeImage:beforeImagePath,
+                    afterImage:afterImagePath
                 }
             })
             if (!service) return res.status(404).json({ "message": "Error while adding service" })
@@ -53,6 +66,9 @@ const serviceController = {
             const service = await prisma.service.findUnique({
                 where: {
                     id: Number(id)
+                },
+                include:{
+                    subServices:true
                 }
             })
             if (!service) return res.status(404).json({ "message": "Service not found!!" });
@@ -62,7 +78,7 @@ const serviceController = {
             handlePrismaError(error,res);
         }
     },
-    updateService: async (req, res) => {
+  updateService: async (req, res) => {
         const { id } = req.params;
         const { name, description } = req.body;
         try {
@@ -86,6 +102,16 @@ const serviceController = {
             handlePrismaError(error,res);
         }
       },
+      testService : async(req,res)=>{
+        if (!req.files['beforeImage'] || !req.files['afterImage']) {
+            return res.status(400).json({ error: 'Both before and after images are required' });
+          }
+      
+          const beforeImagePath = req.files['beforeImage'][0].path;
+          const afterImagePath = req.files['afterImage'][0].path;
+
+          console.log(beforeImagePath,afterImagePath);
+      }
 }
 
 function handlePrismaError(error, res) {

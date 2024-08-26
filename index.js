@@ -1,6 +1,8 @@
 const express = require('express');
 const passport = require('passport');
 const cors = require('cors');
+const path = require('path');
+require('./src/passport');
 
 const userRoutes = require('./src/routes/client/userRoutes')
 const adminRoutes = require('./src/routes/admin/adminRoutes')
@@ -13,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(passport.initialize());
-require('./src/passport');
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use("/api/users",userRoutes);
 app.use("/api/admin",adminRoutes);
@@ -25,6 +27,7 @@ app.use("/api",utilitis);
 app.get("/",(req,res)=>{
     res.send("<h1>i am inevitable!!</h1>")
 })
+
 
 app.listen(8080,()=>{
     console.log("[Server]:-http://localhost:8080")

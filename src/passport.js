@@ -30,6 +30,7 @@ passport.use(new JwtStrategy(opts, async (jwt_payload, done) => {
         return done(null, false);
       }
      console.log(user)
+     user.password = null;
     if (user) {
       return done(null, user);
     } else {

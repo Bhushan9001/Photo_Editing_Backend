@@ -71,6 +71,8 @@ model Service {
   id          Int          @id @default(autoincrement())
   name        String       @unique
   description String?
+  afterImage  String
+  beforeImage String
   subServices SubService[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -111,8 +113,8 @@ model Job {
   status       JobStatus  @default(PENDING)
   dropboxLink  String
   Instructions String?    @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 enum JobStatus {
