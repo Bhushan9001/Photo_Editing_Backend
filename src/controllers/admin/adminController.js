@@ -29,7 +29,7 @@ const authController = { // user Authentication Controller
    
     signin: async (req, res) => {
       try {
-        const { email, password , username } = req.body
+        const { email, password } = req.body
         // console.log(req.body);
         const user = await prisma.admin.findUnique({
           where: {
@@ -43,7 +43,8 @@ const authController = { // user Authentication Controller
   
         const payload = {
           email: email,
-          id: user.id
+          id: user.id,
+          role:"admin"
         }
   
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
@@ -53,7 +54,63 @@ const authController = { // user Authentication Controller
         res.status(500).json({ "error": error });
         console.log(error);
       }
+    },
+    create: async(req,res)=>{
+      try {
+        const { username, email, password, role } = req.body;
+        const adminRole = req.user.role;
+        if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create admin"})
+        // Validate input
+        if (!username || !email || !password) {
+          return res.status(400).json({ "message": "Username, email, and password are required" });
+        }
+  
+        // Validate role
+        const validRoles = ['EDITOR', 'MANAGER', 'SUPER_ADMIN']; // Add all your AdminRole enum values here
+        if (role && !validRoles.includes(role)) {
+          return res.status(400).json({ "message": "Invalid role specified" });
+        }
+  
+        // Check if username or email already exists
+        const existingAdmin = await prisma.admin.findFirst({
+          where: {
+            OR: [
+              { username: username },
+              { email: email }
+            ]
+          }
+        });
+  
+        if (existingAdmin) {
+          return res.status(400).json({ "message": "Username or email already exists" });
+        }
+  
+        // Hash password
+        const hashedPassword = bcrypt.hashSync(password, 10);
+  
+        // Create new admin
+        const newAdmin = await prisma.admin.create({
+          data: {
+            username,
+            email,
+            password: hashedPassword,
+            role: role || undefined, // If role is not provided, it will default to EDITOR
+          }
+        });
+  
+        // Remove password from response
+        const { password: _, ...adminWithoutPassword } = newAdmin;
+  
+        res.status(201).json({
+          "message": "Admin created successfully",
+          "admin": adminWithoutPassword
+        });
+  
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ "error": "Internal server error" });
+      }
+    },
     }
-  }
   
   module.exports = {authController}  

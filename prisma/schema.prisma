@@ -25,6 +25,17 @@ enum AdminRole {
   EDITOR
 }
 
+enum Currency {
+  INR
+  USD
+  EUR
+  GBP
+  CAD
+  AUD
+  THB
+  CNY
+}
+
 model Client {
   id         Int        @id @default(autoincrement())
   username   String     @unique
@@ -34,6 +45,7 @@ model Client {
   status     UserStatus @default(ACTIVE)
   createdAt  DateTime   @default(now())
   otp        OTP[]
+  job        Job[]
 }
 
 model Admin {
@@ -55,3 +67,111 @@ model OTP {
   createdAt DateTime @default(now())
 }
 
+model Service {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  afterImage  String
+  beforeImage String
+  subServices SubService[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model SubService {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String?
+  prices      PriceByCountry[]
+  service     Service          @relation(fields: [serviceId], references: [id])
+  serviceId   Int
+  job         Job[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([name, serviceId])
+}
+
+model PriceByCountry {
+  id           Int        @id @default(autoincrement())
+  subService   SubService @relation(fields: [subServiceId], references: [id])
+  subServiceId Int
+  currency     Currency   @default(INR)
+  price        Decimal    @db.Decimal(10, 2)
+
+  @@unique([subServiceId, currency])
+}
+
+model Job {
+  id                Int           @id @default(autoincrement())
+  user              Client        @relation(fields: [clientId], references: [id])
+  clientId          Int
+  subService        SubService    @relation(fields: [subServiceId], references: [id])
+  subServiceId      Int
+  totalPrice        Decimal       @db.Decimal(10, 2)
+  currency          Currency
+  status            JobStatus     @default(PENDING)
+  dropboxLink       String
+  editorDropboxLink String?
+  instructions      String?       @db.Text
+  numberOfPhotos    Int           @default(0)
+  progress          Int           @default(0)
+  payment           Payment?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  job             Job           @relation(fields: [jobId], references: [id])
+  jobId           Int           @unique
+  seriesType      SeriesType
+  seriesNumber    String        @unique
+  fiscalYear      String
+  amount          Decimal       @db.Decimal(10, 2)
+  currency        Currency
+  paymentMethod   PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  invoiceNumber   String        @unique
+  invoiceDate     DateTime
+  dueDate         DateTime
+  clientName      String   // Changed from payerName to clientName
+  clientEmail     String   // Added
+  clientPhone     String   // Added
+  clientGstin     String?
+  clientAddress   String
+  clientCity      String
+  clientState     String
+  clientCountry   String
+  cgstAmount      Decimal?      @db.Decimal(10, 2)
+  sgstAmount      Decimal?      @db.Decimal(10, 2)
+  igstAmount      Decimal?      @db.Decimal(10, 2)
+  totalTaxAmount  Decimal       @db.Decimal(10, 2)
+  totalAmount     Decimal       @db.Decimal(10, 2)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum SeriesType {
+  KR
+  PP
+}
+
+enum PaymentMethod {
+  PAYPAL
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum JobStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
