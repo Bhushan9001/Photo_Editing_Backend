@@ -6,8 +6,8 @@ const serviceController = {
     creatService: async (req, res) => {
         try {
             const { name, description } = req.body;
-            const adminRole = req.user.role;
-            if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create services"})
+            // const adminRole = req.user.role;
+            // if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create services"})
             if (!req.files['beforeImage'] || !req.files['afterImage']) {
                 return res.status(400).json({ error: 'Both before and after images are required' });
               }
