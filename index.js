@@ -11,6 +11,7 @@ const subServiceRoutes = require('./src/routes/service/subServicesRoutes');
 const priceRoutes = require('./src/routes/service/priceRoutes');
 const utilitis = require("./utilitis/dropbox");
 const jobRoutes = require('./src/routes/service/jobRoutes');
+const paymentRoutes = require('./src/routes/service/paymentRoutes');
 const app = express();
 
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use("/api/subServices",subServiceRoutes);
 app.use("/api/prices",priceRoutes);
 app.use("/api",utilitis);
 app.use('/api/jobs', jobRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.get("/",(req,res)=>{
     res.send("<h1>i am inevitable!!</h1>")
