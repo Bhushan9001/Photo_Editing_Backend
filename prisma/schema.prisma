@@ -103,18 +103,29 @@ model PriceByCountry {
 }
 
 model Job {
-  id           Int        @id @default(autoincrement())
-  user         Client     @relation(fields: [clientId], references: [id])
-  clientId     Int
-  subService   SubService @relation(fields: [subServiceId], references: [id])
-  subServiceId Int
-  totalPrice   Decimal    @db.Decimal(10, 2)
-  currency     Currency
-  status       JobStatus  @default(PENDING)
-  dropboxLink  String
-  Instructions String?    @db.Text
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id                Int        @id @default(autoincrement())
+  user              Client     @relation(fields: [clientId], references: [id])
+  clientId          Int
+  subService        SubService @relation(fields: [subServiceId], references: [id])
+  subServiceId      Int
+  totalPrice        Decimal    @db.Decimal(10, 2)
+  currency          Currency
+  status            JobStatus  @default(PENDING)
+  dropboxLink       String
+  editorDropboxLink String?
+  instructions      String?    @db.Text
+  numberOfPhotos    Int
+  progress          Int        @default(0)
+  paymentStatus     PaymentStatus @default(UNPAID)
+  paymentId         String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
 }
 
 enum JobStatus {
