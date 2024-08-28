@@ -7,5 +7,6 @@ router.post("/multiple",priceController.addMultiplePrices);
 router.get("/",priceController.getAllPrices);
 router.put("/:id",priceController.updatePrice);
 router.delete("/:id",priceController.deletePrice);
+router.get('/currencies', priceController.getAllCurrencies);
 
 module.exports = router;
