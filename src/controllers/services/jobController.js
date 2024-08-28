@@ -4,7 +4,7 @@ const { Prisma } = require('@prisma/client');
 const jobController = {
     createJob: async (req, res) => {
         try {
-            const {  serviceId, selectedSubServices, currency, dropboxLink, instructions } = req.body;
+            const { serviceId, selectedSubServices, currency, dropboxLink, instructions } = req.body;
 
             // Validate client exists
             const clientId = req.user.id;
@@ -20,9 +20,9 @@ const jobController = {
 
             // Fetch subservices and their prices
             const subServices = await prisma.subService.findMany({
-                where: { 
-                    id: { in: selectedSubServices.map(Number) }, 
-                    serviceId: Number(serviceId) 
+                where: {
+                    id: { in: selectedSubServices.map(Number) },
+                    serviceId: Number(serviceId)
                 },
                 include: { prices: true },
             });
@@ -122,6 +122,115 @@ const jobController = {
             res.status(200).json({ message: 'Job deleted successfully' });
         } catch (error) {
             handlePrismaError(error, res);
+        }
+    },
+    assignJob: async (req, res) => {
+        try {
+            const { jobId, editorId } = req.body;
+            const job = await prisma.job.findUnique({
+                where: {
+                    id: jobId
+                }
+            })
+            if (!job) {
+                return res.status(404).json({ error: 'Job not found' });
+            }
+            if (job.assignedToId) {
+                return res.status(400).json({ error: 'Job is already assigned' });
+            }
+
+            const admin = await prisma.admin.findUnique({
+                where:{
+                    id:editorId
+                }
+            })
+
+            if (!admin) {
+                return res.status(404).json({ error: 'Admin not found' });
+            }
+
+            if (admin.role !== 'EDITOR') {
+                return res.status(403).json({ error: 'Only EDITOR admins can be assigned jobs' });
+            }
+
+            const assignedJob = await prisma.job.update({
+                where:{id:jobId},
+                data:{
+                    assignedTo:{connect:{id:editorId}},
+                    status:"IN_PROGRESS",
+                    assignedAt: new Date()
+                },
+                include:{
+                    assignedTo:true
+                }
+            })
+            res.status(201).json({"message":"Job asssigned Succesfully",assignedJob});
+        } catch (error) {
+             handlePrismaError(error,res)
+        }
+
+    },
+    changeJobStatus:async ( req,res) => {
+        const jobId  = req.params.id;
+        const { status, progress, editorDropboxLink } = req.body;
+        const editorId = req.user.id; // Assuming you have authentication middleware that sets req.user
+      
+        try {
+          // Fetch the job
+          const job = await prisma.job.findUnique({
+            where: { id: parseInt(jobId) },
+            include: { assignedTo: true }
+          });
+      
+          if (!job) {
+            return res.status(404).json({ error: 'Job not found' });
+          }
+      
+          // Check if the editor is assigned to this job
+          if (job.editorId !== editorId) {
+            return res.status(403).json({ error: 'You are not authorized to update this job' });
+          }
+      
+          // Prepare update data
+          const updateData = {};
+      
+          if (status) {
+            // Validate status
+            if (!['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'].includes(status)) {
+              return res.status(400).json({ error: 'Invalid status' });
+            }
+            updateData.status = status;
+          }
+      
+          if (progress !== undefined) {
+            // Validate progress
+            if (progress < 0 || progress > 100) {
+              return res.status(400).json({ error: 'Progress must be between 0 and 100' });
+            }
+            updateData.progress = progress;
+          }
+      
+          if (status === 'COMPLETED') {
+            if (!editorDropboxLink) {
+              return res.status(400).json({ error: 'Editor Dropbox link is required when completing a job' });
+            }
+            updateData.editorDropboxLink = editorDropboxLink;
+          }
+      
+          // Update the job
+          const updatedJob = await prisma.job.update({
+            where: { id: parseInt(jobId) },
+            data: updateData
+          });
+      
+          res.json({
+            message: 'Job updated successfully',
+            job: updatedJob
+          });
+      
+        } catch (error) {
+          console.error('Error updating job:', error);
+          res.status(500).json({ error: 'An error occurred while updating the job' });
         }
     }
 };
