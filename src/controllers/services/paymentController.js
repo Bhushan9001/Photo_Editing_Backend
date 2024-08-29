@@ -1,13 +1,50 @@
 const prisma = require("../../prisma");
 const { Prisma } = require('@prisma/client');
+const Razorpay = require('razorpay');
+
+// Initialize Razorpay
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_ygTvsqmsNgMBQG',
+  key_secret: 'bVBeYmoQnsUtfemhiO3euJU6'
+});
 
 const paymentController = {
+    createRazorpayOrder: async (req, res) => {
+        try {
+            const { amount, currency, jobId } = req.body;
+
+            // Validate job exists
+            const job = await prisma.job.findUnique({ where: { id: Number(jobId) } });
+            if (!job) {
+                return res.status(404).json({ message: "Job not found" });
+            }
+
+            const options = {
+                amount: amount * 100, // Razorpay expects amount in paise
+                currency: currency,
+                receipt: `job_${jobId}`,
+                payment_capture: 1
+            };
+
+            const order = await razorpay.orders.create(options);
+
+            res.status(200).json({
+                id: order.id,
+                currency: order.currency,
+                amount: order.amount
+            });
+        } catch (error) {
+            console.error('Error creating Razorpay order:', error);
+            res.status(500).json({ message: "Error creating Razorpay order", error: error.message });
+        }
+    },
+
     createPayment: async (req, res) => {
         try {
             const {
-                jobId, seriesType, fiscalYear, amount, currency, paymentMethod,
-                invoiceDate, dueDate, clientGstin, clientAddress, clientCity,
-                clientState, clientCountry
+                jobId, seriesType, amount, currency, paymentMethod,
+                clientName, clientEmail, clientPhone, clientGstin, clientAddress, clientCity,
+                clientState, clientCountry, razorpayPaymentId, razorpayOrderId, razorpaySignature
             } = req.body;
 
             // Validate job exists
@@ -17,6 +54,11 @@ const paymentController = {
             }
 
             // Generate series number
+            const currentDate = new Date();
+            const fiscalYear = currentDate.getMonth() >= 3 ? 
+                `${currentDate.getFullYear()}-${currentDate.getFullYear() + 1}` : 
+                `${currentDate.getFullYear() - 1}-${currentDate.getFullYear()}`;
+
             const latestPayment = await prisma.payment.findFirst({
                 where: { seriesType, fiscalYear },
                 orderBy: { seriesNumber: 'desc' }
@@ -25,9 +67,9 @@ const paymentController = {
             let seriesNumber;
             if (latestPayment) {
                 const latestNumber = parseInt(latestPayment.seriesNumber.slice(-5));
-                seriesNumber = `${seriesType}${fiscalYear}${(latestNumber + 1).toString().padStart(5, '0')}`;
+                seriesNumber = `${seriesType}${fiscalYear.slice(-2)}${(latestNumber + 1).toString().padStart(5, '0')}`;
             } else {
-                seriesNumber = `${seriesType}${fiscalYear}00001`;
+                seriesNumber = `${seriesType}${fiscalYear.slice(-2)}00001`;
             }
 
             // Calculate taxes
@@ -62,8 +104,11 @@ const paymentController = {
                     currency,
                     paymentMethod,
                     invoiceNumber,
-                    invoiceDate: new Date(invoiceDate),
-                    dueDate: new Date(dueDate),
+                    invoiceDate: new Date(),
+                    dueDate: new Date(new Date().setDate(new Date().getDate() + 30)), // Due date 30 days from now
+                    clientName,
+                    clientEmail,
+                    clientPhone,
                     clientGstin,
                     clientAddress,
                     clientCity,
@@ -73,7 +118,8 @@ const paymentController = {
                     sgstAmount,
                     igstAmount,
                     totalTaxAmount,
-                    totalAmount
+                    totalAmount,
+                    status: 'PAID'
                 },
                 include: { job: true }
             });

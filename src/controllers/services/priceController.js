@@ -17,6 +17,21 @@ const priceController = {
             handlePrismaError(error, res);
         }
     },
+    getAllCurrencies: async (req, res) => {
+        try {
+            const currencies = await prisma.priceByCountry.findMany({
+                select: {
+                    currency: true
+                },
+                distinct: ['currency']
+            });
+            
+            const uniqueCurrencies = currencies.map(c => c.currency);
+            res.status(200).json({ currencies: uniqueCurrencies });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
 
     addMultiplePrices: async (req, res) => {
         try {
