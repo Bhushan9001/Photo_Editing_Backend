@@ -4,7 +4,7 @@ const { Prisma } = require('@prisma/client');
 const jobController = {
     createJob: async (req, res) => {
         try {
-            const {  serviceId, selectedSubServices, currency, dropboxLink, instructions } = req.body;
+            const { serviceId, selectedSubServices, currency, dropboxLink, instructions } = req.body;
 
             // Validate client exists
             const clientId = req.user.id;
@@ -41,20 +41,25 @@ const jobController = {
                 totalPrice += Number(price.price);
             }
 
-            // Create job
+            // Create job with multiple subservices
             const job = await prisma.job.create({
                 data: {
                     clientId: Number(clientId),
-                    subServiceId: Number(subServices[0].id), // Assuming we need to set one subServiceId
+                    subServices: {
+                        connect: subServices.map(subService => ({ id: subService.id }))
+                    },
                     totalPrice,
                     currency,
                     dropboxLink,
                     instructions,
                     status: 'PENDING',
+                    user: {
+                        connect: { id: Number(clientId) }
+                    }
                 },
                 include: {
                     user: true,
-                    subService: true
+                    subServices: true
                 }
             });
 
@@ -64,10 +69,11 @@ const jobController = {
         }
     },
 
+
     getAllJobs: async (req, res) => {
         try {
             const jobs = await prisma.job.findMany({
-                include: { user: true, subService: true }
+                include: { user: true, subServices: true }
             });
             if (jobs.length === 0) {
                 return res.status(404).json({ message: "No jobs found" });
@@ -77,13 +83,13 @@ const jobController = {
             handlePrismaError(error, res);
         }
     },
-
+    
     getJob: async (req, res) => {
         try {
             const { id } = req.params;
             const job = await prisma.job.findUnique({
                 where: { id: Number(id) },
-                include: { user: true, subService: true }
+                include: { user: true, subServices: true }
             });
             if (!job) {
                 return res.status(404).json({ message: "Job not found" });

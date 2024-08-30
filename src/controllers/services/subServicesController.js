@@ -17,6 +17,29 @@ const subServicesController = {
             handlePrismaError(error, res);
         }
     },
+    getSubServicesByServiceId: async (req, res) => {
+        try {
+            const { serviceId } = req.query;
+            console.log('Fetching subservices for serviceId:', serviceId);
+            
+            if (!serviceId) {
+                return res.status(400).json({ message: "serviceId is required" });
+            }
+        
+            const subServices = await prisma.subService.findMany({
+                where: {
+                    serviceId: Number(serviceId)
+                },
+                include: { prices: true }
+            });
+        
+            console.log(`Found ${subServices.length} subservices for serviceId ${serviceId}`);
+            res.status(200).json({ subServices });
+        } catch (error) {
+            console.error('Error in getSubServicesByServiceId:', error);
+            handlePrismaError(error, res);
+        }
+    },
     createManySubServices: async (req, res) => {
         try {
             const { subServices } = req.body;
