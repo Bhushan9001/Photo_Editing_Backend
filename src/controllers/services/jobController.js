@@ -44,7 +44,10 @@ const jobController = {
             // Create job with multiple subservices
             const job = await prisma.job.create({
                 data: {
-                    clientId: Number(clientId),
+                    user: {
+                        connect: { id: Number(clientId) }
+                    },
+            
                     subServices: {
                         connect: subServices.map(subService => ({ id: subService.id }))
                     },
@@ -70,6 +73,24 @@ const jobController = {
     },
 
 
+    getJob: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const job = await prisma.job.findUnique({
+                where: { id: Number(id) },
+                include: { user: true, subServices: true }
+            });
+            if (!job) {
+                return res.status(404).json({ message: "Job not found" });
+            }
+            res.status(200).json({ job });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+
+
     getAllJobs: async (req, res) => {
         try {
             const jobs = await prisma.job.findMany({
@@ -83,44 +104,33 @@ const jobController = {
             handlePrismaError(error, res);
         }
     },
-    
     getClientJobs: async (req, res) => {
         try {
-            const { id } = req.params;
-            console.log("id is", id);
-    
-            if (id !== 'client') {
-                return res.status(400).json({ message: "Invalid request" });
-            }
-    
-            // Get the client ID from the Authorization header
-            const authHeader = req.headers['authorization'];
-            if (!authHeader) {
-                return res.status(401).json({ message: "Authorization header missing" });
-            }
-
-            const clientId = Number(req.user.id);
-    
+            const clientId = req.user.id;
+            console.log("Fetching jobs for clientId:", clientId);
+            
             const jobs = await prisma.job.findMany({
-                where: { clientId: clientId },
-                include: { user: true, subServices: true }
+                where: {
+                    clientId: clientId,
+                },
+                include: {
+                    subServices: true,
+                    payment: true
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
             });
-            console.log(clientId+jobs)
     
-            if (jobs.length === 0) {
-                return res.status(404).json({ message: "No jobs found for this client" });
-            }
+            console.log("Found jobs:", jobs.length);
+            console.log("First job (if any):", jobs[0]);
     
             res.status(200).json({ jobs });
         } catch (error) {
-            console.error("Error in getClientJobs:", error);
-            if (error instanceof jwt.JsonWebTokenError) {
-                return res.status(401).json({ message: "Invalid token" });
-            }
-            handlePrismaError(error, res);
+            console.error("Error fetching client jobs:", error);
+            res.status(500).json({ message: "Error fetching client jobs", error: error.message });
         }
     },
-
     updateJob: async (req, res) => {
         try {
             const { id } = req.params;
