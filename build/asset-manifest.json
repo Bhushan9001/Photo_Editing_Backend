@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.c6556d6a.css",
-    "main.js": "/static/js/main.bbfee1ad.js",
+    "main.css": "/static/css/main.6c5f0a15.css",
+    "main.js": "/static/js/main.1fecdaac.js",
     "static/media/company2.jpg": "/static/media/company2.c3c2c3cce8f78c748630.jpg",
     "static/media/company1.jpg": "/static/media/company1.d336663d4cfda9fb2402.jpg",
     "static/media/Picture1.png": "/static/media/Picture1.457b4758af223ab037b6.png",
@@ -10,11 +10,11 @@
     "static/media/illustration.jpg": "/static/media/illustration.7cc67cb03a037fca0cbc.jpg",
     "static/media/paypal.png": "/static/media/paypal.7a004534edd20d706c3c.png",
     "index.html": "/index.html",
-    "main.c6556d6a.css.map": "/static/css/main.c6556d6a.css.map",
-    "main.bbfee1ad.js.map": "/static/js/main.bbfee1ad.js.map"
+    "main.6c5f0a15.css.map": "/static/css/main.6c5f0a15.css.map",
+    "main.1fecdaac.js.map": "/static/js/main.1fecdaac.js.map"
   },
   "entrypoints": [
-    "static/css/main.c6556d6a.css",
-    "static/js/main.bbfee1ad.js"
+    "static/css/main.6c5f0a15.css",
+    "static/js/main.1fecdaac.js"
   ]
 }
