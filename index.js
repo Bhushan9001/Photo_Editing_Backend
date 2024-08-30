@@ -12,6 +12,7 @@ const priceRoutes = require('./src/routes/service/priceRoutes');
 const utilitis = require("./utilitis/dropbox");
 const jobRoutes = require('./src/routes/service/jobRoutes');
 const paymentRoutes = require('./src/routes/service/paymentRoutes');
+const imageRoutes = require('./src/routes/service/imageRoutes');
 const app = express();
 
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use("/api/prices",priceRoutes);
 app.use("/api",utilitis);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api',imageRoutes)
 
 
 app.use(express.static(path.join(__dirname, 'build')));

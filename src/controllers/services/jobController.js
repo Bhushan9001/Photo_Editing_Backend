@@ -1,6 +1,6 @@
 const prisma = require("../../prisma");
 const { Prisma } = require('@prisma/client');
-
+const jwt = require('jsonwebtoken');
 const jobController = {
     createJob: async (req, res) => {
         try {
@@ -84,18 +84,39 @@ const jobController = {
         }
     },
     
-    getJob: async (req, res) => {
+    getClientJobs: async (req, res) => {
         try {
             const { id } = req.params;
-            const job = await prisma.job.findUnique({
-                where: { id: Number(id) },
+            console.log("id is", id);
+    
+            if (id !== 'client') {
+                return res.status(400).json({ message: "Invalid request" });
+            }
+    
+            // Get the client ID from the Authorization header
+            const authHeader = req.headers['authorization'];
+            if (!authHeader) {
+                return res.status(401).json({ message: "Authorization header missing" });
+            }
+
+            const clientId = Number(req.user.id);
+    
+            const jobs = await prisma.job.findMany({
+                where: { clientId: clientId },
                 include: { user: true, subServices: true }
             });
-            if (!job) {
-                return res.status(404).json({ message: "Job not found" });
+            console.log(clientId+jobs)
+    
+            if (jobs.length === 0) {
+                return res.status(404).json({ message: "No jobs found for this client" });
             }
-            res.status(200).json({ job });
+    
+            res.status(200).json({ jobs });
         } catch (error) {
+            console.error("Error in getClientJobs:", error);
+            if (error instanceof jwt.JsonWebTokenError) {
+                return res.status(401).json({ message: "Invalid token" });
+            }
             handlePrismaError(error, res);
         }
     },

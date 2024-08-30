@@ -4,7 +4,7 @@ const router = require("express").Router();
 
 router.post("/",passport.authenticate('jwt',{session:false}), jobController.createJob);
 router.get("/", jobController.getAllJobs);
-router.get("/:id", jobController.getJob);
+router.get('/:id', jobController.getClientJobs);
 router.put("/update-job/:id",passport.authenticate('jwt',{session:false}),jobController.changeJobStatus)
 router.put("/assign-job",jobController.assignJob);
 router.put("/:id", jobController.updateJob);
