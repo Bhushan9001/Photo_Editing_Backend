@@ -28,11 +28,13 @@ app.use("/api",utilitis);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/payments', paymentRoutes);
 
-app.get("/",(req,res)=>{
-    res.send("<h1>i am inevitable!!</h1>")
-})
 
+app.use(express.static(path.join(__dirname, 'build')));
 
-app.listen(8080,()=>{
+app.get('', (req, res) => {
+    res.sendFile(path.join(__dirname+'/build/index.html'));
+  });
+  
+app.listen(8080,'0.0.0.0',()=>{
     console.log("[Server]:-http://localhost:8080")
 })
