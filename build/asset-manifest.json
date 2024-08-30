@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.9bdfa6ab.css",
-    "main.js": "/static/js/main.e65d3fa6.js",
+    "main.js": "/static/js/main.b1740cef.js",
     "static/media/company2.jpg": "/static/media/company2.c3c2c3cce8f78c748630.jpg",
     "static/media/company1.jpg": "/static/media/company1.d336663d4cfda9fb2402.jpg",
     "static/media/Picture1.png": "/static/media/Picture1.457b4758af223ab037b6.png",
@@ -14,10 +14,10 @@
     "static/media/paypal.png": "/static/media/paypal.7a004534edd20d706c3c.png",
     "index.html": "/index.html",
     "main.9bdfa6ab.css.map": "/static/css/main.9bdfa6ab.css.map",
-    "main.e65d3fa6.js.map": "/static/js/main.e65d3fa6.js.map"
+    "main.b1740cef.js.map": "/static/js/main.b1740cef.js.map"
   },
   "entrypoints": [
     "static/css/main.9bdfa6ab.css",
-    "static/js/main.e65d3fa6.js"
+    "static/js/main.b1740cef.js"
   ]
 }
