@@ -13,6 +13,7 @@ const utilitis = require("./utilitis/dropbox");
 const jobRoutes = require('./src/routes/service/jobRoutes');
 const paymentRoutes = require('./src/routes/service/paymentRoutes');
 const imageRoutes = require('./src/routes/service/imageRoutes');
+const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
 
 app.use(express.json());
@@ -29,7 +30,7 @@ app.use("/api",utilitis);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api',imageRoutes)
-
+app.use('/api', dropboxRouter); 
 
 app.use(express.static(path.join(__dirname, 'build')));
 
