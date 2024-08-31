@@ -135,7 +135,7 @@ const jobController = {
             const { jobId, editorId } = req.body;
             const job = await prisma.job.findUnique({
                 where: {
-                    id: jobId
+                    id: Number(jobId)
                 }
             })
             if (!job) {
@@ -147,7 +147,7 @@ const jobController = {
 
             const admin = await prisma.admin.findUnique({
                 where:{
-                    id:editorId
+                    id:Number(editorId)
                 }
             })
 
@@ -160,9 +160,9 @@ const jobController = {
             }
 
             const assignedJob = await prisma.job.update({
-                where:{id:jobId},
+                where:{id:Number(jobId)},
                 data:{
-                    assignedTo:{connect:{id:editorId}},
+                    assignedTo:{connect:{id:Number(editorId)}},
                     status:"IN_PROGRESS",
                     assignedAt: new Date()
                 },
@@ -235,8 +235,33 @@ const jobController = {
           });
       
         } catch (error) {
-          console.error('Error updating job:', error);
-          res.status(500).json({ error: 'An error occurred while updating the job' });
+            handlePrismaError(error,res);
+        }
+    },
+    getAssignedJobs : async (req,res) => {
+        try {
+            const {id} = req.user;
+            const assignedJobs = await prisma.job.findMany({
+             where:{editorId:Number(id)}
+            });
+            if(!assignedJobs) return res.json(201).status({"message":"no jobs assigned to you"});
+            res.status(201).json({"message":"Assigned Jobs",assignedJobs});
+        } catch (error) {
+          handlePrismaError(error,res);;
+        }
+    },
+    getUserSpecificJobs : async (req,res) => {
+        try {
+            const {userId} = req.body;
+            const jobs = await prisma.job.findMany({
+                where:{clientId:userId},
+                include:{subServices:true}
+                
+            })
+            if(jobs.length==0) return res.status(404).json({"Message":"Jobs not found"});
+            res.status(201).json({"Message":"Successfull",jobs});
+        } catch (error) {
+            handlePrismaError(error,res);
         }
     }
 };

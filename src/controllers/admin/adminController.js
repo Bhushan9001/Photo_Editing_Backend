@@ -113,6 +113,51 @@ const authController = { // user Authentication Controller
     },
     }
 
-    
+    const fetchController = {
+         getAllEditors : async (req,res) => {
+          try {
+            const {role} = req.query;
+            const editors = await prisma.admin.findMany({
+              where:{
+                role:role
+              }
+            });
+            if(!editors)return res.status(404).json({"message":"No editors found"});
+            res.status(201).json({"Message":"Editors fouded",editors});
+          } catch (error) {
+            handlePrismaError(error,res)
+          }
+          
+         },
+         getAdmins:async (req,res) => {
+            try {
+              const admins = await prisma.admin.findMany({});
+              if(!admins) return res.status(404).json({"message":"Not found"});
+              res.status(201).json({"message":"Successful",admins})
+            } catch (error) {
+              handlePrismaError(error,res);
+            }
+         }
+    }
+
+  function handlePrismaError(error, res) {
+    console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        switch (error.code) {
+            case 'P2002':
+                return res.status(409).json({ message: "A unique constraint would be violated on Payment. Details: " + error.meta.target });
+            case 'P2025':
+                return res.status(404).json({ message: "Record not found" });
+            case 'P2003':
+                return res.status(400).json({ message: "Foreign key constraint failed on the field: " + error.meta.field_name });
+            default:
+                return res.status(400).json({ message: "Database error", error: error.message });
+        }
+    } else if (error instanceof Prisma.PrismaClientValidationError) {
+        return res.status(400).json({ message: "Validation error", error: error.message });
+    } else {
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}  
   
-  module.exports = {authController}  
+  module.exports = {authController,fetchController}  
