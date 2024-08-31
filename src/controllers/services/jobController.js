@@ -279,11 +279,11 @@ const jobController = {
     },
     getUserSpecificJobs : async (req,res) => {
         try {
-            const {userId} = req.body;
+            const {userId} = req.query;
+            console.log(userId);
             const jobs = await prisma.job.findMany({
-                where:{clientId:userId},
-                include:{subServices:true}
-                
+                where:{clientId:Number(userId)},
+                include:{subServices:true}                
             })
             if(jobs.length==0) return res.status(404).json({"Message":"Jobs not found"});
             res.status(201).json({"Message":"Successfull",jobs});

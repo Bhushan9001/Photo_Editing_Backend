@@ -78,17 +78,29 @@ const serviceController = {
             handlePrismaError(error,res);
         }
     },
-  updateService: async (req, res) => {
+    updateService: async (req, res) => {
         const { id } = req.params;
         const { name, description } = req.body;
         try {
+            let updateData = { name, description };
+    
+            if (req.files) {
+                if (req.files['beforeImage']) {
+                    updateData.beforeImage = `images/${req.files['beforeImage'][0].filename}`;
+                }
+                if (req.files['afterImage']) {
+                    updateData.afterImage = `images/${req.files['afterImage'][0].filename}`;
+                }
+            }
+    
             const service = await prisma.service.update({
                 where: { id: Number(id) },
-                data: { name, description }
+                data: updateData
             });
+    
             res.json(service);
         } catch (error) {
-            handlePrismaError(error,res);
+            handlePrismaError(error, res);
         }
     },
     deleteService : async (req, res) => {
