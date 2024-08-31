@@ -176,6 +176,17 @@ const fetchController = {
     } catch (error) {
       handlePrismaError(error,res)
     }
+  },
+  deleteUser:async (req,res) => {
+    try {
+      const { id } = req.params;
+      await prisma.client.delete({
+        where:{id:Number(id)}
+      }).then(()=>{res.status(201).json({"message":"Deleted Succesfully"})
+      })
+    } catch (error) {
+      handlePrismaError(error, res)
+    }
   }
 }
 function handlePrismaError(error, res) {

@@ -9,6 +9,6 @@ router.post("/verify-email",authController.verifyEmail);
 router.post("/reset-password",authController.resetPassword);
 router.post("/confirm-password",authController.resetPasswordconfirm)
 router.get("/",fetchController.getAllUsers);
-
+router.delete("/:id",fetchController.deleteUser);
 
 module.exports = router
