@@ -4,6 +4,7 @@ const router = require("express").Router();
 
 router.post("/",subServicesController.createSubService);
 router.post("/many",subServicesController.createManySubServices);
+router.get('/subservices', subServicesController.getSubServicesByServiceId);
 router.post("/withPrices",subServicesController.createSubServiceWithPrices);
 router.get("/",subServicesController.getAllSubServices);
 router.get("/:id",subServicesController.getSubService);
