@@ -1,23 +1,23 @@
 const prisma = require("../../prisma");
 const { Prisma } = require('@prisma/client');
-
+const jwt = require('jsonwebtoken');
 const jobController = {
     createJob: async (req, res) => {
         try {
-            const { serviceId, selectedSubServices, currency, dropboxLink, instructions } = req.body;
-
+            const { serviceId, selectedSubServices, currency, dropboxLink, numberOfPhotos, instructions } = req.body;
+    
             // Validate client exists
             const clientId = req.user.id;
             if (!clientId) {
                 return res.status(404).json({ message: "Client not found" });
             }
-
+    
             // Validate service exists
             const service = await prisma.service.findUnique({ where: { id: Number(serviceId) } });
             if (!service) {
                 return res.status(404).json({ message: "Service not found" });
             }
-
+    
             // Fetch subservices and their prices
             const subServices = await prisma.subService.findMany({
                 where: {
@@ -26,25 +26,27 @@ const jobController = {
                 },
                 include: { prices: true },
             });
-
+    
             if (subServices.length !== selectedSubServices.length) {
                 return res.status(400).json({ message: "Invalid subservice selection" });
             }
-
-            // Calculate total price
+    
+            // Calculate total price based on number of photos
             let totalPrice = 0;
             for (const subService of subServices) {
                 const price = subService.prices.find(p => p.currency === currency);
                 if (!price) {
                     return res.status(400).json({ message: `Price not available for ${subService.name} in ${currency}` });
                 }
-                totalPrice += Number(price.price);
+                totalPrice += Number(price.price) * numberOfPhotos;
             }
-
+    
             // Create job with multiple subservices
             const job = await prisma.job.create({
                 data: {
-                    clientId: Number(clientId),
+                    user: {
+                        connect: { id: Number(clientId) }
+                    },
                     subServices: {
                         connect: subServices.map(subService => ({ id: subService.id }))
                     },
@@ -52,38 +54,21 @@ const jobController = {
                     currency,
                     dropboxLink,
                     instructions,
+                    numberOfPhotos,
                     status: 'PENDING',
-                    user: {
-                        connect: { id: Number(clientId) }
-                    }
                 },
                 include: {
                     user: true,
                     subServices: true
                 }
             });
-
+    
             res.status(201).json({ message: "Job created successfully", job });
         } catch (error) {
             handlePrismaError(error, res);
         }
     },
 
-
-    getAllJobs: async (req, res) => {
-        try {
-            const jobs = await prisma.job.findMany({
-                include: { user: true, subServices: true }
-            });
-            if (jobs.length === 0) {
-                return res.status(404).json({ message: "No jobs found" });
-            }
-            res.status(200).json({ jobs });
-        } catch (error) {
-            handlePrismaError(error, res);
-        }
-    },
-    
     getJob: async (req, res) => {
         try {
             const { id } = req.params;
@@ -100,6 +85,48 @@ const jobController = {
         }
     },
 
+
+
+    getAllJobs: async (req, res) => {
+        try {
+            const jobs = await prisma.job.findMany({
+                include: { user: true, subServices: true }
+            });
+            if (jobs.length === 0) {
+                return res.status(404).json({ message: "No jobs found" });
+            }
+            res.status(200).json({ jobs });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+    getClientJobs: async (req, res) => {
+        try {
+            const clientId = req.user.id;
+            console.log("Fetching jobs for clientId:", clientId);
+            
+            const jobs = await prisma.job.findMany({
+                where: {
+                    clientId: clientId,
+                },
+                include: {
+                    subServices: true,
+                    payment: true
+                },
+                orderBy: {
+                    createdAt: "desc"
+                }
+            });
+    
+            console.log("Found jobs:", jobs.length);
+            console.log("First job (if any):", jobs[0]);
+    
+            res.status(200).json({ jobs });
+        } catch (error) {
+            console.error("Error fetching client jobs:", error);
+            res.status(500).json({ message: "Error fetching client jobs", error: error.message });
+        }
+    },
     updateJob: async (req, res) => {
         try {
             const { id } = req.params;

@@ -154,6 +154,12 @@ model Payment {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
+model Image {
+  id        Int      @id @default(autoincrement())
+  imagePath String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 enum SeriesType {
   KR
