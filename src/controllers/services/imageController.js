@@ -1,0 +1,104 @@
+const { Prisma } = require('@prisma/client');
+const prisma = require('../../prisma');
+
+const imageController = {
+    addImage: async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: 'Image is required' });
+            }
+
+            const imagePath = `images/${req.file.filename}`;
+
+            const image = await prisma.image.create({
+                data: {
+                    imagePath
+                }
+            });
+
+            if (!image) return res.status(404).json({ "message": "Error while adding image" });
+            res.status(201).json({ "message": "Image added successfully", image });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    getAllImages: async (req, res) => {
+        try {
+            const images = await prisma.image.findMany();
+            if (!images || images.length === 0) return res.status(404).json({ "message": "No images found" });
+            res.status(200).json({ images });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    getImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const image = await prisma.image.findUnique({
+                where: {
+                    id: Number(id)
+                }
+            });
+            if (!image) return res.status(404).json({ "message": "Image not found" });
+            res.status(200).json({ image });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    updateImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            if (!req.file) {
+                return res.status(400).json({ error: 'New image is required for update' });
+            }
+
+            const imagePath = `images/${req.file.filename}`;
+
+            const image = await prisma.image.update({
+                where: { id: Number(id) },
+                data: { imagePath }
+            });
+
+            res.status(200).json({ "message": "Image updated successfully", image });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    deleteImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+            await prisma.image.delete({
+                where: { id: Number(id) }
+            });
+            res.status(200).json({ message: 'Image deleted successfully' });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    }
+};
+function handlePrismaError(error, res) {
+    console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // Handle known Prisma errors
+        switch (error.code) {
+            case 'P2002':
+                return res.status(409).json({ message: "A unique constraint would be violated on Service. Details: " + error.meta.target });
+            case 'P2025':
+                return res.status(404).json({ message: "Record not found" });
+            default:
+                return res.status(400).json({ message: "Database error", error: error.message });
+        }
+    } else if (error instanceof Prisma.PrismaClientValidationError) {
+        // Handle validation errors
+        return res.status(400).json({ message: "Validation error", error: error.message });
+    } else {
+        // Handle other types of errors
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
+module.exports = { imageController };

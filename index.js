@@ -12,6 +12,8 @@ const priceRoutes = require('./src/routes/service/priceRoutes');
 const utilitis = require("./utilitis/dropbox");
 const jobRoutes = require('./src/routes/service/jobRoutes');
 const paymentRoutes = require('./src/routes/service/paymentRoutes');
+const imageRoutes = require('./src/routes/service/imageRoutes');
+const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
 
 app.use(express.json());
@@ -27,12 +29,15 @@ app.use("/api/prices",priceRoutes);
 app.use("/api",utilitis);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api',imageRoutes)
+app.use('/api', dropboxRouter); 
 
-app.get("/",(req,res)=>{
-    res.send("<h1>i am inevitable!!</h1>")
-})
+app.use(express.static(path.join(__dirname, 'build')));
 
-
-app.listen(8080,()=>{
+app.get('', (req, res) => {
+    res.sendFile(path.join(__dirname+'/build/index.html'));
+  });
+  
+app.listen(8080,'0.0.0.0',()=>{
     console.log("[Server]:-http://localhost:8080")
 })
