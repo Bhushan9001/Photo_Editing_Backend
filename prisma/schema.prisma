@@ -83,6 +83,8 @@ model SubService {
   id          Int              @id @default(autoincrement())
   name        String
   description String?
+  afterImage  String?
+  beforeImage String?
   prices      PriceByCountry[]
   service     Service          @relation(fields: [serviceId], references: [id])
   serviceId   Int
@@ -97,7 +99,7 @@ model PriceByCountry {
   id           Int        @id @default(autoincrement())
   subService   SubService @relation(fields: [subServiceId], references: [id])
   subServiceId Int
-  currency     Currency   @default(INR)
+  currency     Currency   @default(USD)
   price        Decimal    @db.Decimal(10, 2)
 
   @@unique([subServiceId, currency])
