@@ -1,20 +1,24 @@
 {
   "files": {
-    "main.css": "/static/css/main.6c5f0a15.css",
-    "main.js": "/static/js/main.550fea1f.js",
+    "main.css": "/static/css/main.d2c15e44.css",
+    "main.js": "/static/js/main.88cb5419.js",
     "static/media/company2.jpg": "/static/media/company2.c3c2c3cce8f78c748630.jpg",
     "static/media/company1.jpg": "/static/media/company1.d336663d4cfda9fb2402.jpg",
     "static/media/Picture1.png": "/static/media/Picture1.457b4758af223ab037b6.png",
     "static/media/happyclient.jpg": "/static/media/happyclient.8b6af06fe0e621b0ec42.jpg",
+    "static/media/jewelry2-after.jpeg": "/static/media/jewelry2-after.2a721dd2aa4c5ea2cca7.jpeg",
+    "static/media/jewelry2-before.jpeg": "/static/media/jewelry2-before.58065d93491205eff68a.jpeg",
+    "static/media/jewelry1-after.jpeg": "/static/media/jewelry1-after.78c267e4876db1cbe45b.jpeg",
+    "static/media/jewelry1-before.jpeg": "/static/media/jewelry1-before.194d2ee96635da76def6.jpeg",
     "static/media/logo.png": "/static/media/logo.b108a0eef6bc7490bfee.png",
     "static/media/illustration.jpg": "/static/media/illustration.7cc67cb03a037fca0cbc.jpg",
     "static/media/paypal.png": "/static/media/paypal.7a004534edd20d706c3c.png",
     "index.html": "/index.html",
-    "main.6c5f0a15.css.map": "/static/css/main.6c5f0a15.css.map",
-    "main.550fea1f.js.map": "/static/js/main.550fea1f.js.map"
+    "main.d2c15e44.css.map": "/static/css/main.d2c15e44.css.map",
+    "main.88cb5419.js.map": "/static/js/main.88cb5419.js.map"
   },
   "entrypoints": [
-    "static/css/main.6c5f0a15.css",
-    "static/js/main.550fea1f.js"
+    "static/css/main.d2c15e44.css",
+    "static/js/main.88cb5419.js"
   ]
 }
