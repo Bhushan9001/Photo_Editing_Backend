@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.763b5f36.css",
-    "main.js": "/static/js/main.d4a285e5.js",
+    "main.css": "/static/css/main.a293e0c8.css",
+    "main.js": "/static/js/main.0c9eff30.js",
     "static/media/hero_video.mp4": "/static/media/hero_video.2e950cefcd58be1f17a9.mp4",
     "static/media/homepage_banner2.jpg": "/static/media/homepage_banner2.0fe970e9b11422980782.jpg",
     "static/media/homepage_banner1.jpg": "/static/media/homepage_banner1.2ed0c4244bf15f39ce91.jpg",
@@ -10,19 +10,27 @@
     "static/media/company1.jpg": "/static/media/company1.d336663d4cfda9fb2402.jpg",
     "static/media/Picture1.png": "/static/media/Picture1.457b4758af223ab037b6.png",
     "static/media/happyclient.jpg": "/static/media/happyclient.8b6af06fe0e621b0ec42.jpg",
-    "static/media/jewelry2-after.jpeg": "/static/media/jewelry2-after.2a721dd2aa4c5ea2cca7.jpeg",
-    "static/media/jewelry2-before.jpeg": "/static/media/jewelry2-before.58065d93491205eff68a.jpeg",
     "static/media/jewelry1-after.jpeg": "/static/media/jewelry1-after.78c267e4876db1cbe45b.jpeg",
     "static/media/jewelry1-before.jpeg": "/static/media/jewelry1-before.194d2ee96635da76def6.jpeg",
     "static/media/ExperienceBanner.png": "/static/media/ExperienceBanner.c0ce8de5712b1054cf31.png",
+    "static/media/photographer.jpeg": "/static/media/photographer.0eea1957120b2822dc26.jpeg",
+    "static/media/WorkingProcess1.png": "/static/media/WorkingProcess1.12da28270f95df5e8f94.png",
+    "static/media/WorkingProcess2.png": "/static/media/WorkingProcess2.a7982f12b51021c4e6ac.png",
+    "static/media/WorkingProcess3.png": "/static/media/WorkingProcess3.770ec64836f2ed3be783.png",
     "static/media/illustration.jpg": "/static/media/illustration.7cc67cb03a037fca0cbc.jpg",
     "static/media/logo.png": "/static/media/logo.9e9c7c0226e10b9cd9d3.png",
+    "static/media/ServiceFeature2.png": "/static/media/ServiceFeature2.a785787b4d9b2e813255.png",
+    "static/media/ServiceFeature1.png": "/static/media/ServiceFeature1.31d4f11d14da7e11aa15.png",
+    "static/media/ServiceFeature3.png": "/static/media/ServiceFeature3.5f9ee60d63cc1ccd4bc0.png",
+    "static/media/ServiceFeature6.png": "/static/media/ServiceFeature6.92358f842bae07fd87fd.png",
+    "static/media/ServiceFeature5.png": "/static/media/ServiceFeature5.4664334da1ff3784ac35.png",
+    "static/media/ServiceFeature8.png": "/static/media/ServiceFeature8.a88a3bb417e2412503bd.png",
     "index.html": "/index.html",
-    "main.763b5f36.css.map": "/static/css/main.763b5f36.css.map",
-    "main.d4a285e5.js.map": "/static/js/main.d4a285e5.js.map"
+    "main.a293e0c8.css.map": "/static/css/main.a293e0c8.css.map",
+    "main.0c9eff30.js.map": "/static/js/main.0c9eff30.js.map"
   },
   "entrypoints": [
-    "static/css/main.763b5f36.css",
-    "static/js/main.d4a285e5.js"
+    "static/css/main.a293e0c8.css",
+    "static/js/main.0c9eff30.js"
   ]
 }
