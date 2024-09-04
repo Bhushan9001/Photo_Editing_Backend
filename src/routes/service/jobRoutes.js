@@ -6,6 +6,7 @@ router.post("/",passport.authenticate('jwt',{session:false}), jobController.crea
 router.get("/", jobController.getAllJobs);
 router.get("/assigned-jobs",passport.authenticate('jwt',{session:false}),jobController.getAssignedJobs)
 router.get("/user-jobs",jobController.getUserSpecificJobs);
+router.get("/client", passport.authenticate('jwt',{session:false}),jobController.getClientJobs)
 router.get("/:id", jobController.getJob);
 router.put("/update-job/:id",passport.authenticate('jwt',{session:false}),jobController.changeJobStatus)
 router.put("/assign-job",jobController.assignJob);
