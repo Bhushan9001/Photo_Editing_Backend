@@ -23,13 +23,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https:", "http:"],
-        fontSrc: ["'self'", "https:", "http:", "data:"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:", "http:"],
-        frameSrc: ["'self'", "https:", "http:"],
-        imgSrc: ["'self'", "data:", "https:", "http:"],
-        connectSrc: ["'self'", "https:", "http:", "wss:", "ws:"],
-        upgradeInsecureRequests: [],
+        styleSrc: ["'self'", "'unsafe-inline'", "http:"],
+        fontSrc: ["'self'", "http:", "data:"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "http:"],
+        frameSrc: ["'self'", "http:"],
+        imgSrc: ["'self'", "data:", "http:"],
+        connectSrc: ["'self'", "http:", "ws:"],
       },
     },
     crossOriginEmbedderPolicy: false,
@@ -38,12 +37,19 @@ app.use(
   })
 );
 
+// Remove Strict-Transport-Security header
+app.use((req, res, next) => {
+  res.removeHeader('Strict-Transport-Security');
+  next();
+});
+
 // CORS configuration
 app.use(cors({
-  origin: '*', // Be more specific in production
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 app.use(express.json());
 app.use(passport.initialize());
