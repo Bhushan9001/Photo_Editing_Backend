@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet'); // Add this line
 require('./src/passport');
 
 const userRoutes = require('./src/routes/client/userRoutes')
@@ -15,6 +16,23 @@ const paymentRoutes = require('./src/routes/service/paymentRoutes');
 const imageRoutes = require('./src/routes/service/imageRoutes');
 const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
+
+// Add this block before other middleware
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
+        scriptSrc: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to"],
+        frameSrc: ["'self'", "https://api.razorpay.com"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https://api.razorpay.com"],
+      },
+    },
+  })
+);
 
 app.use(express.json());
 app.use(cors());
@@ -35,9 +53,9 @@ app.use('/api', dropboxRouter);
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('', (req, res) => {
-    res.sendFile(path.join(__dirname+'/build/index.html'));
-  });
-  
+  res.sendFile(path.join(__dirname+'/build/index.html'));
+});
+
 app.listen(8080,'0.0.0.0',()=>{
-    console.log("[Server]:-http://15.206.148.121:8080")
-})
+  console.log("[Server]:-http://15.206.148.121:8080")
+});
