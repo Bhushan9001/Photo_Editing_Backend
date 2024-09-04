@@ -28,12 +28,12 @@ app.use(
         scriptSrc: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
         frameSrc: ["'self'", "https://api.razorpay.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https://api.razorpay.com", "wss://"],
+        connectSrc: ["'self'", "https://api.razorpay.com", "wss:"],
         styleSrcElem: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         scriptSrcElem: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
       },
     },
-    crossOriginEmbedderPolicy: false, // This might be needed for some third-party integrations
+    crossOriginEmbedderPolicy: false,
   })
 );
 
