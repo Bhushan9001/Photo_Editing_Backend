@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.ee5901e5.css",
-    "main.js": "/static/js/main.527eba6c.js",
+    "main.css": "/static/css/main.763b5f36.css",
+    "main.js": "/static/js/main.d4a285e5.js",
     "static/media/hero_video.mp4": "/static/media/hero_video.2e950cefcd58be1f17a9.mp4",
     "static/media/homepage_banner2.jpg": "/static/media/homepage_banner2.0fe970e9b11422980782.jpg",
     "static/media/homepage_banner1.jpg": "/static/media/homepage_banner1.2ed0c4244bf15f39ce91.jpg",
@@ -14,14 +14,15 @@
     "static/media/jewelry2-before.jpeg": "/static/media/jewelry2-before.58065d93491205eff68a.jpeg",
     "static/media/jewelry1-after.jpeg": "/static/media/jewelry1-after.78c267e4876db1cbe45b.jpeg",
     "static/media/jewelry1-before.jpeg": "/static/media/jewelry1-before.194d2ee96635da76def6.jpeg",
-    "static/media/logo.png": "/static/media/logo.b108a0eef6bc7490bfee.png",
+    "static/media/ExperienceBanner.png": "/static/media/ExperienceBanner.c0ce8de5712b1054cf31.png",
     "static/media/illustration.jpg": "/static/media/illustration.7cc67cb03a037fca0cbc.jpg",
+    "static/media/logo.png": "/static/media/logo.9e9c7c0226e10b9cd9d3.png",
     "index.html": "/index.html",
-    "main.ee5901e5.css.map": "/static/css/main.ee5901e5.css.map",
-    "main.527eba6c.js.map": "/static/js/main.527eba6c.js.map"
+    "main.763b5f36.css.map": "/static/css/main.763b5f36.css.map",
+    "main.d4a285e5.js.map": "/static/js/main.d4a285e5.js.map"
   },
   "entrypoints": [
-    "static/css/main.ee5901e5.css",
-    "static/js/main.527eba6c.js"
+    "static/css/main.763b5f36.css",
+    "static/js/main.d4a285e5.js"
   ]
 }
