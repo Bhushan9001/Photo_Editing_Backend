@@ -25,12 +25,15 @@ app.use(
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        scriptSrc: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to"],
+        scriptSrc: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
         frameSrc: ["'self'", "https://api.razorpay.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https://api.razorpay.com"],
+        connectSrc: ["'self'", "https://api.razorpay.com", "wss://"],
+        styleSrcElem: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+        scriptSrcElem: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
       },
     },
+    crossOriginEmbedderPolicy: false, // This might be needed for some third-party integrations
   })
 );
 
