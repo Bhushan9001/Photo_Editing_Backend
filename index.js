@@ -17,28 +17,35 @@ const imageRoutes = require('./src/routes/service/imageRoutes');
 const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
 
-// Add this block before other middleware
+// Updated Helmet configuration
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        fontSrc: ["'self'", "https://fonts.gstatic.com"],
-        scriptSrc: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
-        frameSrc: ["'self'", "https://api.razorpay.com"],
-        imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "https://api.razorpay.com", "wss:"],
-        styleSrcElem: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-        scriptSrcElem: ["'self'", "https://checkout.razorpay.com", "https://embed.tawk.to", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:", "http:"],
+        fontSrc: ["'self'", "https:", "http:", "data:"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:", "http:"],
+        frameSrc: ["'self'", "https:", "http:"],
+        imgSrc: ["'self'", "data:", "https:", "http:"],
+        connectSrc: ["'self'", "https:", "http:", "wss:", "ws:"],
+        upgradeInsecureRequests: [],
       },
     },
     crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
   })
 );
 
+// CORS configuration
+app.use(cors({
+  origin: '*', // Be more specific in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
-app.use(cors());
 app.use(passport.initialize());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
@@ -55,10 +62,11 @@ app.use('/api', dropboxRouter);
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('', (req, res) => {
-  res.sendFile(path.join(__dirname+'/build/index.html'));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.listen(8080,'0.0.0.0',()=>{
-  console.log("[Server]:-http://15.206.148.121:8080")
+// For development (HTTP)
+app.listen(8080, '0.0.0.0', () => {
+  console.log("[Server]:-http://15.206.148.121:8080");
 });
