@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.a293e0c8.css",
-    "main.js": "/static/js/main.0c9eff30.js",
+    "main.css": "/static/css/main.b4099f9d.css",
+    "main.js": "/static/js/main.25837e4c.js",
     "static/media/hero_video.mp4": "/static/media/hero_video.2e950cefcd58be1f17a9.mp4",
     "static/media/homepage_banner2.jpg": "/static/media/homepage_banner2.0fe970e9b11422980782.jpg",
     "static/media/homepage_banner1.jpg": "/static/media/homepage_banner1.2ed0c4244bf15f39ce91.jpg",
@@ -13,7 +13,7 @@
     "static/media/jewelry1-after.jpeg": "/static/media/jewelry1-after.78c267e4876db1cbe45b.jpeg",
     "static/media/jewelry1-before.jpeg": "/static/media/jewelry1-before.194d2ee96635da76def6.jpeg",
     "static/media/ExperienceBanner.png": "/static/media/ExperienceBanner.c0ce8de5712b1054cf31.png",
-    "static/media/photographer.jpeg": "/static/media/photographer.0eea1957120b2822dc26.jpeg",
+    "static/media/photographer.jpeg": "/static/media/photographer.be4e15f648ed5f450de4.jpeg",
     "static/media/WorkingProcess1.png": "/static/media/WorkingProcess1.12da28270f95df5e8f94.png",
     "static/media/WorkingProcess2.png": "/static/media/WorkingProcess2.a7982f12b51021c4e6ac.png",
     "static/media/WorkingProcess3.png": "/static/media/WorkingProcess3.770ec64836f2ed3be783.png",
@@ -26,11 +26,11 @@
     "static/media/ServiceFeature5.png": "/static/media/ServiceFeature5.4664334da1ff3784ac35.png",
     "static/media/ServiceFeature8.png": "/static/media/ServiceFeature8.a88a3bb417e2412503bd.png",
     "index.html": "/index.html",
-    "main.a293e0c8.css.map": "/static/css/main.a293e0c8.css.map",
-    "main.0c9eff30.js.map": "/static/js/main.0c9eff30.js.map"
+    "main.b4099f9d.css.map": "/static/css/main.b4099f9d.css.map",
+    "main.25837e4c.js.map": "/static/js/main.25837e4c.js.map"
   },
   "entrypoints": [
-    "static/css/main.a293e0c8.css",
-    "static/js/main.0c9eff30.js"
+    "static/css/main.b4099f9d.css",
+    "static/js/main.25837e4c.js"
   ]
 }

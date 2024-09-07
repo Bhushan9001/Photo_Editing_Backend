@@ -2,7 +2,6 @@ const express = require('express');
 const passport = require('passport');
 const cors = require('cors');
 const path = require('path');
-const helmet = require('helmet'); // Add this line
 require('./src/passport');
 
 const userRoutes = require('./src/routes/client/userRoutes')
@@ -17,41 +16,8 @@ const imageRoutes = require('./src/routes/service/imageRoutes');
 const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
 
-// Updated Helmet configuration
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", "http:"],
-        fontSrc: ["'self'", "http:", "data:"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "http:"],
-        frameSrc: ["'self'", "http:"],
-        imgSrc: ["'self'", "data:", "http:"],
-        connectSrc: ["'self'", "http:", "ws:"],
-      },
-    },
-    crossOriginEmbedderPolicy: false,
-    crossOriginOpenerPolicy: false,
-    crossOriginResourcePolicy: false,
-  })
-);
-
-// Remove Strict-Transport-Security header
-app.use((req, res, next) => {
-  res.removeHeader('Strict-Transport-Security');
-  next();
-});
-
-// CORS configuration
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-
 app.use(express.json());
+app.use(cors());
 app.use(passport.initialize());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
@@ -68,11 +34,10 @@ app.use('/api', dropboxRouter);
 
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-// For development (HTTP)
-app.listen(8080, '0.0.0.0', () => {
-  console.log("[Server]:-http://15.206.148.121:8080");
-});
+app.get('', (req, res) => {
+    res.sendFile(path.join(__dirname+'/build/index.html'));
+  });
+  
+app.listen(8080,'0.0.0.0',()=>{
+    console.log("[Server]:-http://15.206.148.121:8080")
+})
