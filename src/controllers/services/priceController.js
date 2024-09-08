@@ -44,7 +44,7 @@ const priceController = {
                 prices.map(price => 
                     prisma.priceByCountry.create({
                         data: {
-                            price: parseFloat(price.amount), // Changed from 'amount' to 'price.amount'
+                            price: parseFloat(price.price), // Changed from 'amount' to 'price.amount'
                             currency: price.currency,
                             subService: { connect: { id: Number(price.subServiceId) } }
                         }

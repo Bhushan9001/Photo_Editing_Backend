@@ -55,6 +55,7 @@ model Admin {
   password  String
   role      AdminRole  @default(EDITOR)
   status    UserStatus @default(ACTIVE)
+  job       Job[]
   createdAt DateTime   @default(now())
 }
 
@@ -82,10 +83,12 @@ model SubService {
   id          Int              @id @default(autoincrement())
   name        String
   description String?
+  afterImage  String?
+  beforeImage String?
   prices      PriceByCountry[]
   service     Service          @relation(fields: [serviceId], references: [id])
   serviceId   Int
-  job         Job[]
+  jobs        Job[]    
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -96,7 +99,7 @@ model PriceByCountry {
   id           Int        @id @default(autoincrement())
   subService   SubService @relation(fields: [subServiceId], references: [id])
   subServiceId Int
-  currency     Currency   @default(INR)
+  currency     Currency   @default(USD)
   price        Decimal    @db.Decimal(10, 2)
 
   @@unique([subServiceId, currency])
@@ -106,8 +109,7 @@ model Job {
   id                Int           @id @default(autoincrement())
   user              Client        @relation(fields: [clientId], references: [id])
   clientId          Int
-  subService        SubService    @relation(fields: [subServiceId], references: [id])
-  subServiceId      Int
+  subServices       SubService[]  // Changed to many-to-many relationship
   totalPrice        Decimal       @db.Decimal(10, 2)
   currency          Currency
   status            JobStatus     @default(PENDING)
@@ -117,6 +119,9 @@ model Job {
   numberOfPhotos    Int           @default(0)
   progress          Int           @default(0)
   payment           Payment?
+  assignedTo        Admin?        @relation(fields: [editorId] , references: [id])
+  editorId          Int?
+  assignedAt        DateTime      @default(now())
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 }
@@ -151,7 +156,18 @@ model Payment {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
-
+model Image {
+  id        Int      @id @default(autoincrement())
+  imagePath String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Sliderimage {
+  id        Int      @id @default(autoincrement())
+  imagePath String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 enum SeriesType {
   KR
   PP
@@ -161,6 +177,7 @@ enum PaymentMethod {
   PAYPAL
   OTHER
 }
+
 
 enum PaymentStatus {
   PENDING

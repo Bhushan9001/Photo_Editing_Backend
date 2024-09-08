@@ -6,8 +6,8 @@ const serviceController = {
     creatService: async (req, res) => {
         try {
             const { name, description } = req.body;
-            const adminRole = req.user.role;
-            if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create services"})
+            // const adminRole = req.user.role;
+            // if(adminRole != 'SUPER_ADMIN') return res.status(403).json({"message":"You don't have privilages to create services"})
             if (!req.files['beforeImage'] || !req.files['afterImage']) {
                 return res.status(400).json({ error: 'Both before and after images are required' });
               }
@@ -35,7 +35,7 @@ const serviceController = {
     getAllServices: async (req, res) => {
         try {
             const services = await prisma.service.findMany({
-                include: { subServices: true }
+                include: { subServices:true }
             });
             if (!services) return res.status(401).json({ "message": "No services found" })
             res.status(201).json({ services });
@@ -78,17 +78,29 @@ const serviceController = {
             handlePrismaError(error,res);
         }
     },
-  updateService: async (req, res) => {
+    updateService: async (req, res) => {
         const { id } = req.params;
         const { name, description } = req.body;
         try {
+            let updateData = { name, description };
+    
+            if (req.files) {
+                if (req.files['beforeImage']) {
+                    updateData.beforeImage = `images/${req.files['beforeImage'][0].filename}`;
+                }
+                if (req.files['afterImage']) {
+                    updateData.afterImage = `images/${req.files['afterImage'][0].filename}`;
+                }
+            }
+    
             const service = await prisma.service.update({
                 where: { id: Number(id) },
-                data: { name, description }
+                data: updateData
             });
+    
             res.json(service);
         } catch (error) {
-            handlePrismaError(error,res);
+            handlePrismaError(error, res);
         }
     },
     deleteService : async (req, res) => {
