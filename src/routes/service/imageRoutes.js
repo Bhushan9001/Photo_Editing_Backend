@@ -15,7 +15,9 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage , limits: {
+    fileSize: 50 * 1024 * 1024 // Set file size limit to 50 MB (adjust as needed)
+}});
 
 router.post('/images', upload.single('image'), imageController.addImage);
 router.get('/images', imageController.getAllImages);
@@ -27,6 +29,6 @@ router.post('/slider-images', upload.array('images',10), sliderImageController.a
 router.get('/slider-images', sliderImageController.getAllImages);
 router.get('/slider-images/:id', sliderImageController.getImage);
 router.put('/slider-images/:id', upload.single('image'), sliderImageController.updateImage);
-router.delete('/imslider-imagesages/:id', sliderImageController.deleteImage);
+router.delete('/slider-imagesages/:id', sliderImageController.deleteImage);
 
 module.exports = router;
