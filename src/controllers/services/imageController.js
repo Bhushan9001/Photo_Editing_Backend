@@ -96,7 +96,14 @@ function handlePrismaError(error, res) {
     } else if (error instanceof Prisma.PrismaClientValidationError) {
         // Handle validation errors
         return res.status(400).json({ message: "Validation error", error: error.message });
-    } else {
+    }
+    else if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+            return res.status(413).send('File size exceeds the maximum limit.');
+        }
+    }
+    
+    else {
         // Handle other types of errors
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
