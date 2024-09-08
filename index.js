@@ -42,5 +42,5 @@ app.get('', (req, res) => {
   });
   
 app.listen(8080,'0.0.0.0',()=>{
-    console.log("[Server]:-http://localhost:8080")
+    console.log("[Server]:-http://15.206.148.121:8080")
 })
