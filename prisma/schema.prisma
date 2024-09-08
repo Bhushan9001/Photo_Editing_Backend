@@ -162,7 +162,12 @@ model Image {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
+model Sliderimage {
+  id        Int      @id @default(autoincrement())
+  imagePath String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 enum SeriesType {
   KR
   PP
@@ -172,6 +177,7 @@ enum PaymentMethod {
   PAYPAL
   OTHER
 }
+
 
 enum PaymentStatus {
   PENDING

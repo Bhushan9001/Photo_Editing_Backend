@@ -101,4 +101,94 @@ function handlePrismaError(error, res) {
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
-module.exports = { imageController };
+const sliderImageController = {
+    addImages: async (req, res) => {
+        try {
+            // Check if any files are uploaded
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ error: 'At least one image is required' });
+            }
+    
+            // Prepare an array to store image records to be inserted into the database
+            const imagePaths = req.files.map(file => ({
+                imagePath: `images/${file.filename}`
+            }));
+    
+            // Insert all image paths into the database using Prisma's createMany
+            const images = await prisma.sliderimage.createMany({
+                data: imagePaths
+            });
+    
+            // If no images are added, send an error response
+            if (!images || images.count === 0) {
+                return res.status(404).json({ message: 'Error while adding images' });
+            }
+    
+            // If successful, send a response with the number of images added
+            res.status(201).json({ message: 'Images added successfully', count: images.count });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+    
+
+    getAllImages: async (req, res) => {
+        try {
+            const images = await prisma.sliderimage.findMany();
+            if (!images || images.length === 0) return res.status(404).json({ "message": "No images found" });
+            res.status(200).json({ images });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    getImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const image = await prisma.sliderimage.findUnique({
+                where: {
+                    id: Number(id)
+                }
+            });
+            if (!image) return res.status(404).json({ "message": "Image not found" });
+            res.status(200).json({ image });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    updateImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            if (!req.file) {
+                return res.status(400).json({ error: 'New image is required for update' });
+            }
+
+            const imagePath = `images/${req.file.filename}`;
+
+            const image = await prisma.sliderimage.update({
+                where: { id: Number(id) },
+                data: { imagePath }
+            });
+
+            res.status(200).json({ "message": "Image updated successfully", image });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    },
+
+    deleteImage: async (req, res) => {
+        try {
+            const { id } = req.params;
+            await prisma.sliderimage.delete({
+                where: { id: Number(id) }
+            });
+            res.status(200).json({ message: 'Image deleted successfully' });
+        } catch (error) {
+            handlePrismaError(error, res);
+        }
+    }
+};
+
+module.exports = { imageController,sliderImageController };

@@ -15,6 +15,7 @@ const paymentRoutes = require('./src/routes/service/paymentRoutes');
 const imageRoutes = require('./src/routes/service/imageRoutes');
 const dropboxRouter = require('./utilitis/dropbox')
 const app = express();
+app.use(cors())
 
 app.use(express.json());
 app.use(cors());

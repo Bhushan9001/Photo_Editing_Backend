@@ -1,7 +1,8 @@
-const { imageController } = require("../../controllers/services/imageController");
+const { imageController , sliderImageController} = require("../../controllers/services/imageController");
 const passport = require('passport');
 
 const multer = require('multer');
+const { sliderimage } = require("../../prisma");
 const router = require("express").Router();
 
 // Configure multer for file upload
@@ -21,5 +22,11 @@ router.get('/images', imageController.getAllImages);
 router.get('/images/:id', imageController.getImage);
 router.put('/images/:id', upload.single('image'), imageController.updateImage);
 router.delete('/images/:id', imageController.deleteImage);
+//Slider Images Routes
+router.post('/slider-images', upload.array('images',10), sliderImageController.addImages);
+router.get('/slider-images', sliderImageController.getAllImages);
+router.get('/slider-images/:id', sliderImageController.getImage);
+router.put('/slider-images/:id', upload.single('image'), sliderImageController.updateImage);
+router.delete('/imslider-imagesages/:id', sliderImageController.deleteImage);
 
 module.exports = router;
