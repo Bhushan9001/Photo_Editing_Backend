@@ -1,5 +1,6 @@
 const { Prisma } = require('@prisma/client');
 const prisma = require('../../prisma');
+const multer = require('multer')
 
 const imageController = {
     addImage: async (req, res) => {
